@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: maestro-ms
+  r2dbc:
+    url: r2dbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:maestrodb}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+  sql:
+    init:
+      mode: always
+
+server:
+  port: 8080
+
+logging:
+  level:
+    io.r2dbc.postgresql.QUERY: DEBUG
+    io.r2dbc.postgresql.PARAM: DEBUG
