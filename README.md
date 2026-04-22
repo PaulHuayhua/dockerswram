@@ -2,49 +2,53 @@
 
 Microservicio REST con Spring Boot WebFlux y PostgreSQL, contenerizado con Docker y orquestado con Docker Swarm.
 
-## Requisitos
-
-- Docker
-- Docker Compose
-- Git
-
 ## Cómo Ejecutar
 
 ### Opción 1: Docker Compose (Desarrollo)
 
 ```bash
-# 1. Construir imágenes
+# 1. Construir imagen del frontend para Compose
 git checkout fe
 docker build -t maestro-frontend:latest .
+
+# 2. Construir imagen del backend
 git checkout be
 docker build -t maestro-api:latest .
 
-# 2. Levantar servicios
+# 3. Levantar servicios
 docker compose up -d
 
-# 3. Verificar estado
+# 4. Verificar estado
 docker compose ps
 ```
 
 ### Opción 2: Docker Swarm (Producción)
 
 ```bash
-# 1. Construir imágenes
+# 1. Construir imagen del frontend para Swarm
 git checkout fe
-docker build -t maestro-frontend:latest .
+docker build -f Dockerfile -t maestro-frontend:latest --build-arg NGINX_CONF=nginx-swarm.conf .
+
+# 2. Construir imagen del backend
 git checkout be
 docker build -t maestro-api:latest .
 
-# 2. Inicializar Swarm
+# 3. Inicializar Swarm
 docker swarm init
 
-# 3. Desplegar stack
+# 4. Desplegar stack
 docker stack deploy -c docker-stack.yml microservice
 
-# 4. Verificar servicios
+# 5. Verificar servicios
 docker service ls
 docker service ps microservice_maestro-api
 ```
+
+### Nota Importante
+
+- **Docker Compose**: Usa `maestro-api:8080` (nombre del servicio)
+- **Docker Swarm**: Usa `microservice_maestro-api:8080` (prefijo del stack + nombre del servicio)
+- El frontend tiene dos configuraciones nginx: `nginx.conf` (Compose) y `nginx-swarm.conf` (Swarm)
 
 ### Acceder a la aplicación
 
